@@ -1,0 +1,5 @@
+{
+  "name": "كليم - Kaleem AI Chat",
+  "description": "تطبيق دردشة ذكي بواجهة عصرية مستوحاة من جوجل جيميناي، يعمل بنظام Serverless باستخدام Cloudflare Workers و OpenAI.",
+  "requestFramePermissions": []
+}

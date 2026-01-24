@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Najm - نجم | خبير فقه اللغة</title>
+    <title>Najm</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,7 @@
     <script type="importmap">
       {
         "imports": {
-          "@google/genai": "https://esm.run/@google/genai"
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
         }
       }
     </script>
@@ -175,16 +175,17 @@
     </main>
 
     <script type="module">
-        import { GoogleGenAI } from "@google/genai";
+        // التغيير هنا: استخدام مكتبة generative-ai المستقرة بدلاً من genai
+        import { GoogleGenerativeAI } from "@google/generative-ai";
 
         // --- Configuration ---
-        // تم استخدام رابط الوركر الخاص بك هنا
         const CLOUDFLARE_WORKER_URL = "https://yellow-bread-e187.najm-ai.workers.dev"; 
         
         const SYSTEM_INSTRUCTION = `أنت "نجم"، خبير لغوي متخصص في اللغة العربية، تجيب بدقة وبلاغة مع الاستشهاد بالمعاجم.`;
 
         // --- State ---
-        let ai = null;
+        let genAI = null; // تغيير اسم المتغير
+        let model = null;
         let chatSession = null;
         let isProcessing = false;
         let apiKey = null;
@@ -203,7 +204,6 @@
         // --- Sidebar Logic ---
         window.toggleSidebar = () => {
             const isHidden = els.sidebar.classList.contains('translate-x-full');
-            
             if (isHidden) {
                 els.sidebar.classList.remove('translate-x-full');
                 els.overlay.classList.remove('hidden');
@@ -233,8 +233,6 @@
         els.input.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-            
-            // إظهار زر الإرسال فقط عند الكتابة
             const hasText = this.value.trim().length > 0;
             if (hasText && !isProcessing) {
                 els.sendBtn.disabled = false;
@@ -255,12 +253,9 @@
 
         els.sendBtn.addEventListener('click', handleSend);
 
-        // --- تصحيح: وظيفة جلب المفتاح ---
         async function fetchApiKey() {
             try {
-                // التصحيح: تم إضافة أمر fetch الذي كان مفقوداً
                 const response = await fetch(CLOUDFLARE_WORKER_URL);
-                
                 if (!response.ok) throw new Error("فشل الاتصال بالخادم");
                 const data = await response.json();
                 return data.key;
@@ -274,7 +269,6 @@
             const text = els.input.value.trim();
             if (!text || isProcessing) return;
 
-            // UI Updates
             isProcessing = true;
             els.input.value = '';
             els.input.style.height = '56px';
@@ -282,38 +276,39 @@
             els.empty.classList.add('hidden');
             els.messages.classList.remove('hidden');
 
-            // 1. User Message
             appendMessage(text, 'user');
 
-            // 2. AI Placeholder
             const aiId = `ai-${Date.now()}`;
             appendMessage('', 'model', aiId, true);
 
-            // 3. API Call
             try {
                 if (!apiKey) {
                     apiKey = await fetchApiKey();
-                    if (!apiKey) throw new Error("تعذر الحصول على مفتاح API، تأكد من إعدادات كلاود فلير");
+                    if (!apiKey) throw new Error("تعذر الحصول على مفتاح API");
                 }
 
-                if (!ai) ai = new GoogleGenAI({ apiKey: apiKey });
+                // التهيئة باستخدام المكتبة المستقرة
+                if (!genAI) genAI = new GoogleGenerativeAI(apiKey);
                 
                 if (!chatSession) {
-                    chatSession = ai.chats.create({
-                        model: 'gemini-1.5-flash',
-                        config: { systemInstruction: SYSTEM_INSTRUCTION }
+                    model = genAI.getGenerativeModel({ 
+                        model: "gemini-1.5-flash",
+                        systemInstruction: SYSTEM_INSTRUCTION 
                     });
+                    
+                    chatSession = model.startChat();
                 }
 
-                const result = await chatSession.sendMessageStream({ message: text });
+                const result = await chatSession.sendMessageStream(text);
                 
                 let fullText = '';
                 const contentDiv = document.querySelector(`#${aiId} .prose`);
                 const loader = document.querySelector(`#${aiId} .loading-dots`);
                 
-                for await (const chunk of result) {
+                for await (const chunk of result.stream) {
                     if(loader) loader.style.display = 'none';
-                    fullText += chunk.text;
+                    const chunkText = chunk.text();
+                    fullText += chunkText;
                     contentDiv.innerHTML = marked.parse(fullText);
                     scrollToBottom();
                 }

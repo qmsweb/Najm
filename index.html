@@ -36,12 +36,19 @@
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.run/@google/genai"
+        }
+      }
+    </script>
+
     <style>
       /* إعدادات أساسية للهاتف */
       body {
         background-color: #09090b;
         color: #e4e4e7;
-        /* استخدام dvh لحل مشكلة شريط العنوان في الهواتف */
         height: 100dvh; 
         overflow: hidden;
         -webkit-tap-highlight-color: transparent;
@@ -180,13 +187,17 @@
         import { GoogleGenAI } from "@google/genai";
 
         // --- Configuration ---
-        const API_KEY = ""; // ضع مفتاح API الخاص بك هنا
+        // استبدل الرابط أدناه برابط الوركر الخاص بك بعد نشره في كلاود فلير
+        // مثال: https://najm-worker.your-name.workers.dev
+        const CLOUDFLARE_WORKER_URL = "ضع_رابط_الوركر_هنا"; 
+        
         const SYSTEM_INSTRUCTION = `أنت "نجم"، خبير لغوي متخصص في اللغة العربية، تجيب بدقة وبلاغة مع الاستشهاد بالمعاجم.`;
 
         // --- State ---
         let ai = null;
         let chatSession = null;
         let isProcessing = false;
+        let apiKey = null; // سيتم جلبه من كلاود فلير
 
         // --- Elements ---
         const els = {
@@ -204,13 +215,10 @@
             const isHidden = els.sidebar.classList.contains('translate-x-full');
             
             if (isHidden) {
-                // Open Sidebar
                 els.sidebar.classList.remove('translate-x-full');
                 els.overlay.classList.remove('hidden');
-                // Prevent body scroll on mobile when sidebar is open
                 if(window.innerWidth < 768) document.body.style.overflow = 'hidden';
             } else {
-                // Close Sidebar
                 els.sidebar.classList.add('translate-x-full');
                 els.overlay.classList.add('hidden');
                 document.body.style.overflow = '';
@@ -222,7 +230,7 @@
             els.messages.innerHTML = '';
             els.messages.classList.add('hidden');
             els.empty.classList.remove('hidden');
-            if (window.innerWidth < 768) toggleSidebar(); // Close sidebar on mobile
+            if (window.innerWidth < 768) toggleSidebar();
         };
         
         window.fillInput = (text) => {
@@ -256,6 +264,19 @@
 
         els.sendBtn.addEventListener('click', handleSend);
 
+        // وظيفة لجلب المفتاح من كلاود فلير
+        async function fetchApiKey() {
+            try {
+                const response = await fetch(CLOUDFLARE_WORKER_URL);
+                if (!response.ok) throw new Error("فشل الاتصال بالخادم");
+                const data = await response.json();
+                return data.key;
+            } catch (err) {
+                console.error("Error fetching key:", err);
+                return null;
+            }
+        }
+
         async function handleSend() {
             const text = els.input.value.trim();
             if (!text || isProcessing) return;
@@ -277,8 +298,13 @@
 
             // 3. API Call
             try {
-                if (!API_KEY && typeof process === 'undefined') throw new Error("API Key Missing");
-                if (!ai) ai = new GoogleGenAI({ apiKey: API_KEY || "YOUR_API_KEY_HERE" }); // Fallback for demo
+                // إذا لم يكن لدينا مفتاح بعد، نطلبه من كلاود فلير
+                if (!apiKey) {
+                    apiKey = await fetchApiKey();
+                    if (!apiKey) throw new Error("تعذر الحصول على مفتاح API");
+                }
+
+                if (!ai) ai = new GoogleGenAI({ apiKey: apiKey });
                 
                 if (!chatSession) {
                     chatSession = ai.chats.create({
@@ -303,7 +329,7 @@
             } catch (error) {
                 console.error(error);
                 const contentDiv = document.querySelector(`#${aiId} .prose`);
-                if(contentDiv) contentDiv.innerHTML = `<span class="text-red-400 text-sm bg-red-900/20 px-2 py-1 rounded">⚠️ تأكد من مفتاح API (${error.message || 'Error'})</span>`;
+                if(contentDiv) contentDiv.innerHTML = `<span class="text-red-400 text-sm bg-red-900/20 px-2 py-1 rounded">⚠️ حدث خطأ: ${error.message}</span>`;
                 const loader = document.querySelector(`#${aiId} .loading-dots`);
                 if(loader) loader.remove();
             } finally {

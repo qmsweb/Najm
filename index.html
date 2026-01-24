@@ -45,7 +45,6 @@
     </script>
 
     <style>
-      /* إعدادات أساسية للهاتف */
       body {
         background-color: #09090b;
         color: #e4e4e7;
@@ -53,29 +52,21 @@
         overflow: hidden;
         -webkit-tap-highlight-color: transparent;
       }
-
-      /* تنسيق شريط التمرير */
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-      
-      /* تنسيقات المحتوى (Markdown) */
       .prose { max-width: none; font-size: 0.95rem; line-height: 1.8; }
       .prose p { margin-bottom: 0.75rem; }
       .prose strong { color: #60a5fa; font-weight: 700; }
       .prose h1, .prose h2, .prose h3 { color: #f4f4f5; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; }
       .prose ul { list-style-type: disc; padding-right: 1.25rem; margin-bottom: 1rem; color: #d4d4d8; }
       .prose code { background: #27272a; padding: 0.2rem 0.4rem; rounded: 4px; font-family: monospace; color: #e879f9; font-size: 0.85em; }
-
-      /* تأثير الزجاج */
       .glass-panel {
         background: rgba(24, 24, 27, 0.7);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-top: 1px solid rgba(255,255,255,0.08);
       }
-      
-      /* زر التحميل */
       .typing-dot {
         width: 6px; height: 6px; background: #71717a; border-radius: 50%;
         animation: typing 1.4s infinite ease-in-out both;
@@ -187,9 +178,8 @@
         import { GoogleGenAI } from "@google/genai";
 
         // --- Configuration ---
-        // استبدل الرابط أدناه برابط الوركر الخاص بك بعد نشره في كلاود فلير
-        // مثال: https://najm-worker.your-name.workers.dev
-        const CLOUDFLARE_WORKER_URL = "ضع_رابط_الوركر_هنا"; 
+        // تم استخدام رابط الوركر الخاص بك هنا
+        const CLOUDFLARE_WORKER_URL = "https://yellow-bread-e187.najm-ai.workers.dev"; 
         
         const SYSTEM_INSTRUCTION = `أنت "نجم"، خبير لغوي متخصص في اللغة العربية، تجيب بدقة وبلاغة مع الاستشهاد بالمعاجم.`;
 
@@ -197,7 +187,7 @@
         let ai = null;
         let chatSession = null;
         let isProcessing = false;
-        let apiKey = null; // سيتم جلبه من كلاود فلير
+        let apiKey = null;
 
         // --- Elements ---
         const els = {
@@ -210,7 +200,7 @@
             overlay: document.getElementById('sidebar-overlay')
         };
 
-        // --- Sidebar Logic (Mobile Focused) ---
+        // --- Sidebar Logic ---
         window.toggleSidebar = () => {
             const isHidden = els.sidebar.classList.contains('translate-x-full');
             
@@ -244,6 +234,7 @@
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 150) + 'px';
             
+            // إظهار زر الإرسال فقط عند الكتابة
             const hasText = this.value.trim().length > 0;
             if (hasText && !isProcessing) {
                 els.sendBtn.disabled = false;
@@ -264,10 +255,12 @@
 
         els.sendBtn.addEventListener('click', handleSend);
 
-        // وظيفة لجلب المفتاح من كلاود فلير
+        // --- تصحيح: وظيفة جلب المفتاح ---
         async function fetchApiKey() {
             try {
-        const CLOUDFLARE_WORKER_URL = "https://yellow-bread-e187.najm-ai.workers.dev";
+                // التصحيح: تم إضافة أمر fetch الذي كان مفقوداً
+                const response = await fetch(CLOUDFLARE_WORKER_URL);
+                
                 if (!response.ok) throw new Error("فشل الاتصال بالخادم");
                 const data = await response.json();
                 return data.key;
@@ -298,10 +291,9 @@
 
             // 3. API Call
             try {
-                // إذا لم يكن لدينا مفتاح بعد، نطلبه من كلاود فلير
                 if (!apiKey) {
                     apiKey = await fetchApiKey();
-                    if (!apiKey) throw new Error("تعذر الحصول على مفتاح API");
+                    if (!apiKey) throw new Error("تعذر الحصول على مفتاح API، تأكد من إعدادات كلاود فلير");
                 }
 
                 if (!ai) ai = new GoogleGenAI({ apiKey: apiKey });

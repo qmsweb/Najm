@@ -2,287 +2,287 @@
 <html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Najm - نجم | خبير فقه اللغة</title>
     
-    <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
-            fontFamily: {
-              sans: ['Cairo', 'sans-serif'],
-            },
+            fontFamily: { sans: ['Cairo', 'sans-serif'] },
             colors: {
-              gray: {
-                850: '#18191a',
-                900: '#131314',
-                950: '#0b0b0c',
-                800: '#1e1f20',
-              },
-              blue: {
-                400: '#a8c7fa',
-              }
+              background: '#09090b',
+              surface: '#18181b',
+              primary: '#3b82f6',
             },
             animation: {
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'fade-in': 'fadeIn 0.3s ease-out',
+              'slide-in': 'slideIn 0.3s ease-out',
+            },
+            keyframes: {
+              fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+              slideIn: { '0%': { transform: 'translateY(10px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
             }
           },
         },
       }
     </script>
     
-    <!-- Marked Library for Markdown Rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
+      /* إعدادات أساسية للهاتف */
       body {
-        background-color: #131314;
-        color: #e3e3e3;
+        background-color: #09090b;
+        color: #e4e4e7;
+        /* استخدام dvh لحل مشكلة شريط العنوان في الهواتف */
+        height: 100dvh; 
         overflow: hidden;
+        -webkit-tap-highlight-color: transparent;
       }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 8px; }
+
+      /* تنسيق شريط التمرير */
+      ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #444746; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #5e6060; }
+      ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
       
-      /* Markdown Styles */
-      .prose p { margin-bottom: 0.5rem; line-height: 1.7; }
-      .prose strong { color: #a8c7fa; font-weight: 700; }
-      .prose ul { list-style-type: disc; margin-right: 1.5rem; margin-bottom: 0.5rem; }
-      .prose h1, .prose h2, .prose h3 { font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; color: #e3e3e3; }
-      
-      /* Typing Indicator */
-      @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-25%); }
+      /* تنسيقات المحتوى (Markdown) */
+      .prose { max-width: none; font-size: 0.95rem; line-height: 1.8; }
+      .prose p { margin-bottom: 0.75rem; }
+      .prose strong { color: #60a5fa; font-weight: 700; }
+      .prose h1, .prose h2, .prose h3 { color: #f4f4f5; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+      .prose ul { list-style-type: disc; padding-right: 1.25rem; margin-bottom: 1rem; color: #d4d4d8; }
+      .prose code { background: #27272a; padding: 0.2rem 0.4rem; rounded: 4px; font-family: monospace; color: #e879f9; font-size: 0.85em; }
+
+      /* تأثير الزجاج */
+      .glass-panel {
+        background: rgba(24, 24, 27, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(255,255,255,0.08);
       }
-      .animate-bounce-dot { animation: bounce 1s infinite; }
+      
+      /* زر التحميل */
+      .typing-dot {
+        width: 6px; height: 6px; background: #71717a; border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out both;
+      }
+      .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+      .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+      @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
-
-    <script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@0.1.2",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react-markdown": "https://esm.sh/react-markdown@^10.1.0"
-  }
-}
-</script>
 </head>
-<body class="flex h-screen font-sans selection:bg-blue-500/30">
+<body class="flex flex-col md:flex-row h-[100dvh]">
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="fixed inset-y-0 right-0 z-40 w-64 bg-[#1e1f20] border-l border-gray-700 transform transition-transform duration-300 translate-x-0 flex flex-col md:relative">
-        <div class="p-4 flex items-center justify-between">
-            <button id="close-sidebar-btn" class="p-2 text-gray-400 hover:bg-gray-700 rounded-full md:hidden">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity duration-300 md:hidden backdrop-blur-sm"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 right-0 z-50 w-[280px] bg-[#121214] border-l border-white/5 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col md:relative md:translate-x-0 shadow-2xl md:shadow-none">
+        <div class="p-5 flex items-center justify-between border-b border-white/5">
+            <h2 class="font-bold text-lg text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                محفوظات الدردشة
+            </h2>
+            <button onclick="toggleSidebar()" class="p-2 text-gray-400 hover:text-white rounded-full md:hidden active:bg-white/10">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
             </button>
-            <h2 class="font-bold text-lg text-gray-200">المحفوظات</h2>
-            <div class="w-8 md:hidden"></div>
         </div>
 
-        <div class="px-4 pb-4">
-            <button onclick="startNewChat()" class="flex items-center gap-3 w-full bg-[#28292a] hover:bg-[#333537] text-gray-200 px-4 py-3 rounded-full transition-colors text-sm font-medium">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>محادثة جديدة</span>
+        <div class="px-4 py-4">
+            <button onclick="startNewChat()" class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-xl transition-all shadow-lg shadow-blue-900/20 active:scale-95">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+                <span class="font-medium">محادثة جديدة</span>
             </button>
         </div>
 
         <div class="flex-1 overflow-y-auto px-2 space-y-1" id="history-list">
-            <!-- History items will be injected here -->
-            <div class="px-3 py-2 text-xs font-medium text-gray-400 mt-2">اليوم</div>
+            <div class="px-4 py-2 text-xs font-semibold text-gray-500 mt-2 uppercase tracking-wider">اليوم</div>
+            <button class="w-full text-right px-4 py-3 rounded-lg hover:bg-white/5 text-sm text-gray-300 transition-colors truncate">
+                معنى كلمة "سجال"
+            </button>
         </div>
         
-        <div class="p-2 mt-auto border-t border-gray-700 space-y-1">
-             <button class="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-[#28292a] text-sm text-gray-200">
+        <div class="p-4 border-t border-white/5">
+             <button class="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-white/5 text-sm text-gray-400 transition-colors">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span>المساعدة</span>
+                <span>حول نجم</span>
              </button>
         </div>
     </aside>
 
-    <!-- Overlay -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden glass"></div>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col relative h-full w-full bg-[#131314]">
-        <!-- Header -->
-        <header class="flex items-center justify-between p-4 z-10 sticky top-0 bg-[#131314]/90 backdrop-blur-sm">
-            <button id="open-sidebar-btn" class="p-2 text-gray-400 hover:bg-gray-800 rounded-full transition-colors md:hidden">
+    <main class="flex-1 flex flex-col relative w-full h-full bg-[#09090b]">
+        
+        <header class="flex items-center justify-between p-4 z-30 sticky top-0 glass-panel md:hidden">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">ن</div>
+                <span class="font-bold text-lg text-white">نجم</span>
+            </div>
+            <button id="open-sidebar-btn" onclick="toggleSidebar()" class="p-2 text-gray-300 hover:bg-white/10 rounded-full transition-colors active:scale-90">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
-            <div class="flex items-center gap-2 mx-auto md:mr-0">
-                <span class="font-bold text-xl bg-gradient-to-l from-blue-400 to-indigo-400 bg-clip-text text-transparent">نجم</span>
-                <span class="text-[10px] text-gray-400 border border-gray-700 rounded px-1.5 py-0.5">تجريبي</span>
+        </header>
+
+        <header class="hidden md:flex items-center justify-between p-4 px-8 border-b border-white/5">
+             <div class="flex items-center gap-3">
+                <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-l from-blue-400 to-indigo-400">نجم</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20">BETA</span>
             </div>
         </header>
 
-        <!-- Chat Feed -->
-        <div id="chat-feed" class="flex-1 overflow-y-auto px-4 pb-4">
-            <!-- Welcome Message -->
-            <div id="empty-state" class="h-full flex flex-col items-center justify-center p-8 text-center opacity-60">
-                <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-6 animate-pulse-slow">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-400"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        <div id="chat-feed" class="flex-1 overflow-y-auto px-4 pb-4 scroll-smooth">
+            <div id="empty-state" class="h-full flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+                <div class="w-20 h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-2xl border border-white/5">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-blue-400"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
                 </div>
-                <h2 class="text-2xl font-bold mb-2 text-gray-200">مرحباً، أنا نجم</h2>
-                <p class="text-gray-400 max-w-md">خبير فقه اللغة العربية. اسألني عن أصول الكلمات، والاشتقاق، والمعاني الدقيقة.</p>
+                <h2 class="text-2xl font-bold mb-3 text-white">مرحباً، أنا نجم</h2>
+                <p class="text-gray-400 max-w-sm text-sm leading-relaxed">
+                    خبيرك الذكي في فقه اللغة العربية.
+                    <br>اسألني عن أصول الكلمات، الفروق اللغوية، أو الشواهد الشعرية.
+                </p>
+                
+                <div class="mt-8 flex flex-wrap justify-center gap-2">
+                    <button onclick="fillInput('ما الفرق بين الحمد والشكر؟')" class="px-4 py-2 bg-[#1f1f22] hover:bg-[#27272a] text-gray-300 text-xs rounded-full border border-white/5 transition-colors">الفرق بين الحمد والشكر؟</button>
+                    <button onclick="fillInput('ما أصل كلمة تفلسف؟')" class="px-4 py-2 bg-[#1f1f22] hover:bg-[#27272a] text-gray-300 text-xs rounded-full border border-white/5 transition-colors">أصل كلمة "تفلسف"</button>
+                </div>
             </div>
             
-            <div id="messages-container" class="max-w-3xl mx-auto py-4 space-y-6 hidden"></div>
+            <div id="messages-container" class="max-w-3xl mx-auto py-6 space-y-6 hidden pb-32"></div>
         </div>
 
-        <!-- Input Area -->
-        <div class="w-full bg-[#131314] px-4 pb-6 pt-2">
-            <div class="max-w-3xl mx-auto relative bg-[#1e1f20] rounded-3xl border border-gray-700 focus-within:border-gray-500 focus-within:bg-[#28292a] transition-all duration-300">
-                <textarea 
-                    id="user-input"
-                    rows="1"
-                    placeholder="اسأل نجم عن فقه اللغة..."
-                    class="w-full bg-transparent text-gray-100 placeholder-gray-500 px-6 py-4 rounded-3xl resize-none outline-none max-h-[200px] overflow-y-auto"
-                ></textarea>
+        <div class="w-full glass-panel z-20 pb-safe pt-2">
+            <div class="max-w-3xl mx-auto px-4 pb-4">
+                <div class="relative bg-[#1f1f22] rounded-3xl border border-gray-700/50 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all duration-300 shadow-lg">
+                    <textarea 
+                        id="user-input"
+                        rows="1"
+                        placeholder="اطرح سؤالك اللغوي هنا..."
+                        class="w-full bg-transparent text-gray-100 placeholder-gray-500 px-5 py-4 pl-12 rounded-3xl resize-none outline-none max-h-[150px] overflow-y-auto text-[16px]"
+                        style="min-height: 56px;"
+                    ></textarea>
 
-                <div class="flex justify-between items-center px-4 pb-3">
-                    <div class="flex gap-2">
-                        <!-- Decoration Icons -->
-                        <div class="p-2 text-gray-500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
+                    <div class="absolute bottom-2 left-2 flex items-center">
+                        <button id="send-btn" class="p-2.5 bg-blue-600 text-white rounded-full transition-all duration-200 transform scale-0 disabled:opacity-0 disabled:scale-0 shadow-lg shadow-blue-900/30">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
                     </div>
-                    
-                    <button id="send-btn" class="p-2 bg-transparent text-gray-500 rounded-full transition-all duration-300 transform rotate-90 scale-90" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
                 </div>
+                <p class="text-center text-[10px] text-gray-600 mt-2">نجم نموذج ذكاء اصطناعي قد يخطئ، يرجى التحقق من المصادر.</p>
             </div>
-            <p class="text-center text-[11px] text-gray-500 mt-3 font-medium">نجم يعتمد على Gemini Pro وقد يخطئ.</p>
         </div>
     </main>
 
     <script type="module">
         import { GoogleGenAI } from "@google/genai";
 
-        // CONFIGURATION
-        const MODEL_NAME = 'gemini-3-flash-preview';
-        const SYSTEM_INSTRUCTION = `
-          الدور: أنت "نجم"، عالم لغوي متخصص في فقه اللغة العربية.
-          المهمة: الإجابة عن أسئلة الاشتقاق، النحت، الترادف، والفروق اللغوية.
-          الأسلوب: لغة عربية فصحى، رصينة، علمية، مع الاستشهاد بأمهات الكتب (لسان العرب، الخصائص).
-          القيود: ارفض الأسئلة خارج تخصص اللغة (مثل البرمجة والسياسة) بلطف.
-        `;
+        // --- Configuration ---
+        const API_KEY = ""; // ضع مفتاح API الخاص بك هنا
+        const SYSTEM_INSTRUCTION = `أنت "نجم"، خبير لغوي متخصص في اللغة العربية، تجيب بدقة وبلاغة مع الاستشهاد بالمعاجم.`;
 
-        // STATE
+        // --- State ---
         let ai = null;
         let chatSession = null;
         let isProcessing = false;
-        
-        // --- INITIALIZATION ---
-        // Polyfill process.env for static HTML execution if needed
-        if (typeof process === 'undefined') {
-            window.process = { env: { API_KEY: '' } }; // Will be injected or failed if missing
-        }
 
-        try {
-            ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        } catch (e) {
-            console.error("API Key missing or invalid configuration", e);
-            appendMessage("عذراً، لم يتم العثور على مفتاح API. يرجى التأكد من الإعدادات.", 'model');
-        }
+        // --- Elements ---
+        const els = {
+            input: document.getElementById('user-input'),
+            sendBtn: document.getElementById('send-btn'),
+            messages: document.getElementById('messages-container'),
+            empty: document.getElementById('empty-state'),
+            feed: document.getElementById('chat-feed'),
+            sidebar: document.getElementById('sidebar'),
+            overlay: document.getElementById('sidebar-overlay')
+        };
 
-        // --- UI ELEMENTS ---
-        const inputField = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const messagesContainer = document.getElementById('messages-container');
-        const emptyState = document.getElementById('empty-state');
-        const chatFeed = document.getElementById('chat-feed');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-
-        // --- EVENT LISTENERS ---
-        inputField.addEventListener('input', function() {
-            // Auto resize
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        // --- Sidebar Logic (Mobile Focused) ---
+        window.toggleSidebar = () => {
+            const isHidden = els.sidebar.classList.contains('translate-x-full');
             
-            // Toggle Button
-            if (this.value.trim().length > 0 && !isProcessing) {
-                sendBtn.disabled = false;
-                sendBtn.classList.remove('bg-transparent', 'text-gray-500', 'rotate-90', 'scale-90');
-                sendBtn.classList.add('bg-white', 'text-gray-900', 'rotate-0', 'scale-100');
+            if (isHidden) {
+                // Open Sidebar
+                els.sidebar.classList.remove('translate-x-full');
+                els.overlay.classList.remove('hidden');
+                // Prevent body scroll on mobile when sidebar is open
+                if(window.innerWidth < 768) document.body.style.overflow = 'hidden';
             } else {
-                sendBtn.disabled = true;
-                sendBtn.classList.add('bg-transparent', 'text-gray-500', 'rotate-90', 'scale-90');
-                sendBtn.classList.remove('bg-white', 'text-gray-900', 'rotate-0', 'scale-100');
+                // Close Sidebar
+                els.sidebar.classList.add('translate-x-full');
+                els.overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        };
+
+        window.startNewChat = () => {
+            chatSession = null;
+            els.messages.innerHTML = '';
+            els.messages.classList.add('hidden');
+            els.empty.classList.remove('hidden');
+            if (window.innerWidth < 768) toggleSidebar(); // Close sidebar on mobile
+        };
+        
+        window.fillInput = (text) => {
+            els.input.value = text;
+            els.input.dispatchEvent(new Event('input'));
+            els.input.focus();
+        };
+
+        // --- Chat Logic ---
+        els.input.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            
+            const hasText = this.value.trim().length > 0;
+            if (hasText && !isProcessing) {
+                els.sendBtn.disabled = false;
+                els.sendBtn.classList.remove('scale-0', 'opacity-0');
+                els.sendBtn.classList.add('scale-100', 'opacity-100');
+            } else {
+                els.sendBtn.classList.remove('scale-100', 'opacity-100');
+                els.sendBtn.classList.add('scale-0', 'opacity-0');
             }
         });
 
-        inputField.addEventListener('keydown', (e) => {
+        els.input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 handleSend();
             }
         });
 
-        sendBtn.addEventListener('click', handleSend);
-
-        document.getElementById('open-sidebar-btn').addEventListener('click', toggleSidebar);
-        document.getElementById('close-sidebar-btn').addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
-        window.startNewChat = startNewChat; // Expose to global
-
-        // --- LOGIC ---
-        function toggleSidebar() {
-            sidebar.classList.toggle('translate-x-full'); // For mobile hidden state
-            sidebar.classList.toggle('translate-x-0');
-            
-            if (window.innerWidth < 768) {
-                sidebarOverlay.classList.toggle('hidden');
-            }
-        }
-
-        async function startNewChat() {
-            chatSession = null;
-            messagesContainer.innerHTML = '';
-            messagesContainer.classList.add('hidden');
-            emptyState.classList.remove('hidden');
-            if (window.innerWidth < 768) toggleSidebar();
-        }
+        els.sendBtn.addEventListener('click', handleSend);
 
         async function handleSend() {
-            const text = inputField.value.trim();
+            const text = els.input.value.trim();
             if (!text || isProcessing) return;
 
-            // 1. Setup UI
+            // UI Updates
             isProcessing = true;
-            inputField.value = '';
-            inputField.style.height = 'auto';
-            sendBtn.disabled = true;
-            sendBtn.classList.add('bg-transparent', 'text-gray-500');
-            
-            emptyState.classList.add('hidden');
-            messagesContainer.classList.remove('hidden');
+            els.input.value = '';
+            els.input.style.height = '56px';
+            els.sendBtn.classList.add('scale-0');
+            els.empty.classList.add('hidden');
+            els.messages.classList.remove('hidden');
 
-            // 2. Add User Message
+            // 1. User Message
             appendMessage(text, 'user');
-            
-            // 3. Add AI Placeholder
-            const aiMsgId = 'msg-' + Date.now();
-            appendMessage('', 'model', aiMsgId, true); // True for loading state
 
-            // 4. Call Gemini
+            // 2. AI Placeholder
+            const aiId = `ai-${Date.now()}`;
+            appendMessage('', 'model', aiId, true);
+
+            // 3. API Call
             try {
+                if (!API_KEY && typeof process === 'undefined') throw new Error("API Key Missing");
+                if (!ai) ai = new GoogleGenAI({ apiKey: API_KEY || "YOUR_API_KEY_HERE" }); // Fallback for demo
+                
                 if (!chatSession) {
                     chatSession = ai.chats.create({
-                        model: MODEL_NAME,
+                        model: 'gemini-2.0-flash',
                         config: { systemInstruction: SYSTEM_INSTRUCTION }
                     });
                 }
@@ -290,72 +290,60 @@
                 const result = await chatSession.sendMessageStream({ message: text });
                 
                 let fullText = '';
-                const aiMsgContentEl = document.querySelector(`#${aiMsgId} .prose`);
-                const loadingEl = document.querySelector(`#${aiMsgId} .loading-dots`);
+                const contentDiv = document.querySelector(`#${aiId} .prose`);
+                const loader = document.querySelector(`#${aiId} .loading-dots`);
                 
-                if (loadingEl) loadingEl.remove();
-
                 for await (const chunk of result) {
-                   const chunkText = chunk.text;
-                   if (chunkText) {
-                       fullText += chunkText;
-                       // Simple Markdown render using 'marked' global
-                       aiMsgContentEl.innerHTML = marked.parse(fullText);
-                       scrollToBottom();
-                   }
+                    if(loader) loader.style.display = 'none';
+                    fullText += chunk.text;
+                    contentDiv.innerHTML = marked.parse(fullText);
+                    scrollToBottom();
                 }
 
             } catch (error) {
                 console.error(error);
-                const aiMsgContentEl = document.querySelector(`#${aiMsgId} .prose`);
-                if (aiMsgContentEl) aiMsgContentEl.innerHTML = `<span class="text-red-400">عذراً، حدث خطأ في الاتصال. (${error.message})</span>`;
+                const contentDiv = document.querySelector(`#${aiId} .prose`);
+                if(contentDiv) contentDiv.innerHTML = `<span class="text-red-400 text-sm bg-red-900/20 px-2 py-1 rounded">⚠️ تأكد من مفتاح API (${error.message || 'Error'})</span>`;
+                const loader = document.querySelector(`#${aiId} .loading-dots`);
+                if(loader) loader.remove();
             } finally {
                 isProcessing = false;
-                const loadingEl = document.querySelector(`#${aiMsgId} .loading-dots`);
-                if (loadingEl) loadingEl.remove();
+                const loader = document.querySelector(`#${aiId} .loading-dots`);
+                if(loader) loader.remove();
             }
         }
 
         function appendMessage(content, role, id = null, isLoading = false) {
             const div = document.createElement('div');
             if (id) div.id = id;
-            div.className = `flex gap-4 w-full animate-fade-in`;
+            div.className = `flex gap-3 w-full animate-slide-in ${role === 'user' ? 'justify-start' : ''}`;
             
-            const isModel = role === 'model';
-            
-            const avatar = isModel 
-                ? `<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-blue-900/20 text-white font-bold text-xs">ن</div>`
-                : `<div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-gray-300"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>`;
+            const avatar = role === 'model' 
+                ? `<div class="w-8 h-8 flex-shrink-0 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-blue-900/20 mt-1">ن</div>`
+                : `<div class="w-8 h-8 flex-shrink-0 rounded-full bg-[#27272a] flex items-center justify-center text-gray-400 mt-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>`;
 
-            const name = isModel ? 'نجم' : 'أنت';
-            
-            // If loading, show dots
-            const loadingHtml = isLoading 
-                ? `<div class="loading-dots flex gap-1 mt-2">
-                     <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce-dot" style="animation-delay: 0ms"></div>
-                     <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce-dot" style="animation-delay: 150ms"></div>
-                     <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce-dot" style="animation-delay: 300ms"></div>
+            const loadingHTML = isLoading 
+                ? `<div class="loading-dots flex gap-1 mt-2 h-6 items-center">
+                     <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
                    </div>` 
                 : '';
 
-            const parsedContent = content ? marked.parse(content) : '';
-
             div.innerHTML = `
-                <div class="flex-shrink-0 mt-1">${avatar}</div>
-                <div class="flex-1 min-w-0">
-                    <div class="font-semibold text-sm mb-1 text-gray-300">${name}</div>
-                    <div class="prose text-[15px] md:text-base text-gray-100 leading-relaxed dir-rtl">
-                        ${parsedContent}
+                ${avatar}
+                <div class="flex-1 min-w-0 pt-1">
+                    <div class="font-medium text-xs mb-1 text-gray-500">${role === 'model' ? 'نجم' : 'أنت'}</div>
+                    <div class="prose text-gray-200 dir-rtl">
+                        ${content ? marked.parse(content) : ''}
                     </div>
-                    ${loadingHtml}
+                    ${loadingHTML}
                 </div>
             `;
-            messagesContainer.appendChild(div);
+            els.messages.appendChild(div);
             scrollToBottom();
         }
 
         function scrollToBottom() {
-            chatFeed.scrollTo({ top: chatFeed.scrollHeight, behavior: 'smooth' });
+            els.feed.scrollTo({ top: els.feed.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>

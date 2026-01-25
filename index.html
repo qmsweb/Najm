@@ -181,7 +181,7 @@
         // --- Configuration ---
         const CLOUDFLARE_WORKER_URL = "https://yellow-bread-e187.najm-ai.workers.dev"; 
         
-        const SYSTEM_INSTRUCTION = `أنت "نجم"، خبير لغوي متخصص في اللغة العربية، تجيب بدقة وبلاغة مع الاستشهاد بالمعاجم.`;
+        const SYSTEM_INSTRUCTION = `أنت "نجم"، خبير لغوي متخصص في اللغة العربية، تجيب بدقة وبإيجاز مع الاستشهاد بالمعاجم، أنت جزء من منصة روافد.`;
 
         // --- State ---
         let genAI = null; // تغيير اسم المتغير
@@ -292,7 +292,7 @@
                 
                 if (!chatSession) {
                     model = genAI.getGenerativeModel({ 
-                        model: "gemini-1.5-flash-preview",
+                        model: "gemini-2.0-flash-preview",
                         systemInstruction: SYSTEM_INSTRUCTION 
                     });
                     
